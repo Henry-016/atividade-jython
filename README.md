@@ -1,4 +1,4 @@
-# Atividade Prática: Interoperabilidade Python e Java com Jython
+# Interoperabilidade Python e Java com Jython
 
 ## 1. Descrição do Jython
 
@@ -67,12 +67,12 @@ Instancia componentes de interface gráfica de usuário (GUI) com **Java Swing**
 
 1. No terminal ou terminal integrado do VS Code (`Ctrl + \``), execute o **Exemplo 1**:
    ```bash
-   java -jar jython-standalone-2.7.3.jar exemplo1.py
+   java -jar jython.jar exemplo1.py
    ```
 
 2. Execute o **Exemplo 2**:
    ```bash
-   java -jar jython-standalone-2.7.3.jar exemplo2.py
+   java -jar jython.jar exemplo2.py
    ```
 
 ---
@@ -92,12 +92,3 @@ Execute a imagem construída para rodar os exemplos automaticamente:
 ```bash
 docker run --rm atividade-jython
 ```
-
-### 3. Executar um Exemplo Específico via Docker (Opcional)
-Se desejar executar apenas um dos scripts de forma isolada dentro do contêiner:
-```bash
-# Executa apenas o Exemplo 1
-docker run --rm atividade-jython java -jar jython.jar exemplo1.py
-
-# Executa apenas o Exemplo 2
-docker run --rm atividade-jython xvfb-run -a java -jar jython.jar exemplo2.py
