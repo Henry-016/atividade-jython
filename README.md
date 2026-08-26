@@ -2,113 +2,102 @@
 
 ## 1. Descrição do Jython
 
-O **Jython** é uma implementação de código aberto da linguagem de programação Python desenvolvida inteiramente em Java. Ao contrário da implementação padrão do Python (CPython, desenvolvida em C), o Jython compila o código Python diretamente para *bytecode* da **Java Virtual Machine (JVM)** em tempo de execução.
+O **Jython** é uma implementação open-source de alta performance da linguagem Python desenvolvida totalmente em Java. Diferentemente do interpretador de referência (CPython, escrito em C), o Jython compila o código-fonte Python diretamente para *bytecode* executável pela **Java Virtual Machine (JVM)**.
 
-Essa arquitetura permite uma integração transparente e bidirecional entre as duas tecnologias:
-* O código escrito em Python pode importar, instanciar e estender diretamente qualquer classe, interface ou biblioteca da plataforma Java.
-* Permite acesso a recursos avançados do ecossistema Java (concorrência nativa com Threads da JVM, interfaces gráficas Swing/AWT, conectividade corporativa, criptografia e I/O de alto desempenho) utilizando a sintaxe dinâmica, expressiva e concisa do Python.
-
----
-
-## 2. Descrição dos Programas Desenvolvidos
-
-Para evidenciar a interoperabilidade na JVM, foram criados dois programas distintos com escopos práticos:
-
-### Programa 1: Comunicação de Rede HTTP e Hashing Criptográfico (`exemplo1_rede_seguranca.py`)
-Este programa realiza uma requisição HTTP do tipo GET a um endpoint público (`https://httpbin.org/get`), faz o streaming e leitura do corpo da resposta e, em seguida, calcula o hash criptográfico seguro (SHA-256) dos dados recebidos. Todas as operações de conexão de rede, leitura de fluxo de bytes e cálculo do digest criptográfico são delegadas diretamente aos pacotes padrão do Java.
-
-### Programa 2: Interface Gráfica e Concorrência Multithreading (`exemplo2_swing_threads.py`)
-Este programa cria uma interface gráfica de usuário (GUI) interativa contendo uma janela com botão e barra de progresso. Ao disparar o botão, uma tarefa de processamento em segundo plano é instanciada e executada em uma **Thread nativa da JVM**, atualizando o progresso da interface visual sem travar a thread de renderização da UI (Event Dispatch Thread).
+Essa característica viabiliza interoperabilidade transparente e direta:
+* Programas Python podem importar, instanciar classes, implementar interfaces e consumir bibliotecas do ecossistema Java nativamente.
+* Elimina a necessidade de camadas intermediárias de comunicação (como pontes IPC ou JNI manuais), unindo a produtividade e sintaxe concisa do Python com a robustez e APIs corporativas da plataforma Java.
 
 ---
 
-## 3. Classes e Bibliotecas Java Utilizadas
+## 2. Estrutura do Repositório
 
-### No Programa 1 (`exemplo1_rede_seguranca.py`):
-* `java.net.URL`: Representa o endereço do recurso na web e gerencia a criação da conexão.
-* `java.net.HttpURLConnection`: Gerencia a conexão HTTP, envio de cabeçalhos (`User-Agent`) e obtenção do código de status retornado.
-* `java.io.InputStreamReader` e `java.io.BufferedReader`: Realizam a leitura eficiente em stream dos caracteres vindos da resposta HTTP.
-* `java.security.MessageDigest`: Fornece o algoritmo criptográfico de hash seguro (`SHA-256`) para processar os bytes do conteúdo recebido.
+Conforme solicitado nos requisitos da atividade, a estrutura de arquivos é a seguinte:
 
-### No Programa 2 (`exemplo2_swing_threads.py`):
-* `javax.swing.JFrame`, `javax.swing.JButton`, `javax.swing.JProgressBar`, `javax.swing.JPanel`, `javax.swing.JLabel`, `javax.swing.BoxLayout`: Componentes visuais e gerenciadores de layout para a construção da interface gráfica (Java Swing).
-* `java.awt.Dimension`: Define as dimensões e medidas dos componentes de tela.
-* `java.lang.Thread`: Cria e gerencia a linha de execução paralela na JVM.
-* `java.lang.Runnable`: Interface do Java implementada por uma classe Python para definir a rotina executada dentro da nova thread.
+```text
+atividade-jython/
+├── README.md
+├── Dockerfile
+├── exemplo1.py
+└── exemplo2.py
+```
 
 ---
 
-## 4. Integração entre Python e Java nos Exemplos
+## 3. Descrição dos Programas Desenvolvidos
 
-A interoperabilidade proporcionada pelo Jython é demonstrada na prática através de três aspectos centrais:
+### Exemplo 1: Comunicação de Rede HTTP e Criptografia (`exemplo1.py`)
+Realiza uma requisição HTTP `GET` para uma API pública (`https://httpbin.org/get`), consome a resposta através de streaming de entrada e gera o hash criptográfico seguro `SHA-256` da resposta. Toda a camada de rede, buffering de entrada e processamento criptográfico é delegada às classes fundamentais do Java.
 
-1. **Importação Direta de Pacotes Java:** A sintaxe tradicional de imports do Python (`from java.net import URL`, `from javax.swing import JFrame`) é utilizada diretamente para carregar classes do JDK sem necessidade de intermediários ou wrappers JNI (Java Native Interface).
-2. **Implementação de Interfaces Java em Classes Python:** No Programa 2, a classe Python `TarefaProcessamento` herda da interface `java.lang.Runnable` e sobrescreve o método `run()`. O Jython converte essa classe Python em uma implementação válida de `Runnable` aceita pelo construtor de `java.lang.Thread`.
-3. **Mapeamento Transparente de Eventos e Tipos:** Callbacks e listeners do Java (como `actionPerformed` do botão) recebem diretamente funções Python como manipuladores de evento, unindo o modelo orientado a eventos do Java à flexibilidade funcional do Python.
+### Exemplo 2: Interface Gráfica e Concorrência Multithreading (`exemplo2.py`)
+Instancia componentes de interface gráfica de usuário (GUI) com **Java Swing** e executa uma tarefa concorrente em uma **Thread nativa da JVM** (`java.lang.Thread` e `java.lang.Runnable`), demonstrando o acoplamento de callbacks em Python aos eventos de componentes gráficos do Java.
 
 ---
 
-## 5. Instruções para Executar o Projeto
+## 4. Classes e Bibliotecas Java Utilizadas
+
+| Programa | Classe/Interface Java | Pacote / Biblioteca | Finalidade |
+| :--- | :--- | :--- | :--- |
+| **Exemplo 1** | `URL` | `java.net` | Endereçamento e abertura de conexão HTTP |
+| **Exemplo 1** | `HttpURLConnection` | `java.net` | Configuração de headers, verbos HTTP e leitura de status |
+| **Exemplo 1** | `BufferedReader`, `InputStreamReader` | `java.io` | Leitura eficiente em fluxo (stream) da resposta da API |
+| **Exemplo 1** | `MessageDigest` | `java.security` | Geração do hash criptográfico SHA-256 |
+| **Exemplo 2** | `JFrame`, `JButton`, `JProgressBar`, `JPanel`, `JLabel`, `BoxLayout` | `javax.swing` | Criação e estilização da interface gráfica |
+| **Exemplo 2** | `Dimension`, `GraphicsEnvironment` | `java.awt` | Dimensionamento e verificação do ambiente gráfico |
+| **Exemplo 2** | `Thread` | `java.lang` | Gerenciamento e disparo de threads nativas da JVM |
+| **Exemplo 2** | `Runnable` | `java.lang` | Interface implementada em classe Python para execução em background |
+
+---
+
+## 5. Explicação da Interoperabilidade Python/Java
+
+1. **Importação Direta de Tipos Java:** Através de declarações como `from java.net import URL` ou `from javax.swing import JFrame`, o interpretador Jython localiza as classes carregadas no *classpath* da JVM e as expõe como módulos/tipos Python.
+2. **Implementação de Interfaces Java em Classes Python:** No `exemplo2.py`, a classe Python `TarefaProcessamento(Runnable)` herda da interface Java `Runnable`. A JVM reconhece os objetos criados como instâncias legítimas de `Runnable`, permitindo passá-los diretamente para construtores Java (`Thread(tarefa)`).
+3. **Mapeamento de Eventos e Callbacks:** Propriedades como `botao.actionPerformed` recebem diretamente funções e closures do Python, demonstrando a facilidade de acoplamento do modelo orientado a eventos do Java com funções de primeira classe do Python.
+
+---
+
+## 6. Instruções para Executar o Projeto
 
 ### Pré-requisitos
 * **Java Development Kit (JDK)** versão 8 ou superior instalado.
-* Arquivo JAR standalone do Jython (ex: `jython-standalone-2.7.3.jar`).
+* Arquivo JAR standalone do Jython (ex: `jython-standalone-2.7.3.jar` ou `jython.jar`).
 
-### Passo a Passo:
-1. Certifique-se de que os arquivos dos scripts e o JAR do Jython estão na mesma pasta:
-   ```
-   ├── jython-standalone-2.7.3.jar
-   ├── exemplo1_rede_seguranca.py
-   ├── exemplo2_swing_threads.py
-   └── README.md
-   ```
+### Execução via Terminal / VS Code:
 
-2. Verifique se o Java está configurado no terminal:
+1. No terminal ou terminal integrado do VS Code (`Ctrl + \``), execute o **Exemplo 1**:
    ```bash
-   java -version
+   java -jar jython-standalone-2.7.3.jar exemplo1.py
    ```
 
-3. Execute o **Programa 1** (Rede e Criptografia):
+2. Execute o **Exemplo 2**:
    ```bash
-   java -jar jython-standalone-2.7.3.jar exemplo1_rede_seguranca.py
-   ```
-
-4. Execute o **Programa 2** (Interface Gráfica e Threads):
-   ```bash
-   java -jar jython-standalone-2.7.3.jar exemplo2_swing_threads.py
+   java -jar jython-standalone-2.7.3.jar exemplo2.py
    ```
 
 ---
 
-## 6. Instruções para Executar o Projeto Utilizando o Editor / Ambiente Antigravity
+## 7. Instruções para Executar o Projeto Utilizando Docker
 
-Para executar diretamente no ambiente **Antigravity**:
+O projeto conta com um **Dockerfile** configurado que provisiona o ambiente Java, baixa automaticamente o Jython e configura suporte gráfico virtual (`Xvfb`), dispensando qualquer instalação prévia de Java ou Jython na máquina do avaliador.
 
-1. Abra a pasta do projeto no Antigravity.
-2. Abra o terminal integrado (`Ctrl + \`` ou através do menu superior **Terminal > New Terminal**).
-3. Execute qualquer um dos comandos Java padrão diretamente pelo prompt do terminal:
-   ```bash
-   java -jar jython-standalone-2.7.3.jar exemplo1_rede_seguranca.py
-   ```
-4. Caso prefira executar como uma tarefa automatizada, configure o arquivo `.vscode/tasks.json` na raiz do projeto com o seguinte conteúdo:
-   ```json
-   {
-     "version": "2.0.0",
-     "tasks": [
-       {
-         "label": "Executar Script com Jython",
-         "type": "shell",
-         "command": "java -jar jython-standalone-2.7.3.jar ${file}",
-         "group": {
-           "kind": "build",
-           "isDefault": true
-         },
-         "presentation": {
-           "reveal": "always",
-           "panel": "shared"
-         }
-       }
-     ]
-   }
-   ```
-   Com a task configurada, basta abrir o script desejado e executar a tarefa de build do editor.
+### 1. Construir a Imagem Docker
+Na raiz do projeto (`atividade-jython/`), execute:
+```bash
+docker build -t atividade-jython .
+```
+
+### 2. Executar o Contêiner
+Execute a imagem construída para rodar os exemplos automaticamente:
+```bash
+docker run --rm atividade-jython
+```
+
+### 3. Executar um Exemplo Específico via Docker (Opcional)
+Se desejar executar apenas um dos scripts de forma isolada dentro do contêiner:
+```bash
+# Executa apenas o Exemplo 1
+docker run --rm atividade-jython java -jar jython.jar exemplo1.py
+
+# Executa apenas o Exemplo 2
+docker run --rm atividade-jython xvfb-run -a java -jar jython.jar exemplo2.py
