@@ -29,8 +29,8 @@ atividade-jython/
 ### Exemplo 1: Comunicação de Rede HTTP e Criptografia (`exemplo1.py`)
 Realiza uma requisição HTTP `GET` para uma API pública (`https://httpbin.org/get`), consome a resposta através de streaming de entrada e gera o hash criptográfico seguro `SHA-256` da resposta. Toda a camada de rede, buffering de entrada e processamento criptográfico é delegada às classes fundamentais do Java.
 
-### Exemplo 2: Interface Gráfica e Concorrência Multithreading (`exemplo2.py`)
-Instancia componentes de interface gráfica de usuário (GUI) com **Java Swing** e executa uma tarefa concorrente em uma **Thread nativa da JVM** (`java.lang.Thread` e `java.lang.Runnable`), demonstrando o acoplamento de callbacks em Python aos eventos de componentes gráficos do Java.
+### Exemplo 2: Concorrência Multithreading e Coleções Java (`exemplo2.py`)
+Executa processamento concorrente assíncrono utilizando um pool de threads gerenciado pelo ExecutorService da JVM. Lotes de dados numéricos armazenados em ArrayList são processados em paralelo via tarefas que implementam a interface Callable, aplicando funções utilitárias da classe Collections e formatação temporal com java.time.
 
 ---
 
@@ -42,18 +42,17 @@ Instancia componentes de interface gráfica de usuário (GUI) com **Java Swing**
 | **Exemplo 1** | `HttpURLConnection` | `java.net` | Configuração de headers, verbos HTTP e leitura de status |
 | **Exemplo 1** | `BufferedReader`, `InputStreamReader` | `java.io` | Leitura eficiente em fluxo (stream) da resposta da API |
 | **Exemplo 1** | `MessageDigest` | `java.security` | Geração do hash criptográfico SHA-256 |
-| **Exemplo 2** | `JFrame`, `JButton`, `JProgressBar`, `JPanel`, `JLabel`, `BoxLayout` | `javax.swing` | Criação e estilização da interface gráfica |
-| **Exemplo 2** | `Dimension`, `GraphicsEnvironment` | `java.awt` | Dimensionamento e verificação do ambiente gráfico |
-| **Exemplo 2** | `Thread` | `java.lang` | Gerenciamento e disparo de threads nativas da JVM |
-| **Exemplo 2** | `Runnable` | `java.lang` | Interface implementada em classe Python para execução em background |
+| **Exemplo 2** | `Executors`, `Callable` | `java.util.concurrent` | Gerenciamento de pool de threads e definição de tarefas assíncronas com retorno |
+| **Exemplo 2** | `ArrayList`, `Collections` | `java.util` | Manipulação de listas e operações analíticas nativas (min/max) |
+| **Exemplo 2** | `LocalDateTime`, `DateTimeFormatter` | `java.time, java.time.format` | Captura e formatação de timestamp no padrão brasileiro |
 
 ---
 
 ## 5. Explicação da Interoperabilidade Python/Java
 
-1. **Importação Direta de Tipos Java:** Através de declarações como `from java.net import URL` ou `from javax.swing import JFrame`, o interpretador Jython localiza as classes carregadas no *classpath* da JVM e as expõe como módulos/tipos Python.
-2. **Implementação de Interfaces Java em Classes Python:** No `exemplo2.py`, a classe Python `TarefaProcessamento(Runnable)` herda da interface Java `Runnable`. A JVM reconhece os objetos criados como instâncias legítimas de `Runnable`, permitindo passá-los diretamente para construtores Java (`Thread(tarefa)`).
-3. **Mapeamento de Eventos e Callbacks:** Propriedades como `botao.actionPerformed` recebem diretamente funções e closures do Python, demonstrando a facilidade de acoplamento do modelo orientado a eventos do Java com funções de primeira classe do Python.
+1. **Importação Direta de Tipos Java:** Através de declarações como `from java.net import URL` ou `from java.util.concurrent import Executors`, o interpretador Jython localiza as classes carregadas no classpath da JVM e as expõe diretamente como módulos e tipos Python.
+2. **Implementação de Interfaces Java em Classes Python:** No `exemplo2.py`, a classe Python `CalculoParcial(Callable)` herda da interface Java `Callable`. A JVM reconhece as instâncias dessa classe como tarefas executáveis válidas para o método `invokeAll()` do `ExecutorService`.
+3. **Manipulação Fluida de Coleções:** Objetos `ArrayList` instanciados em Python interagem transparentemente com utilitários estáticos como `Collections.max()` e `Collections.min()`, além de permitirem iteração com recursos nativos da sintaxe Python (list comprehensions e laços `for`).
 
 ---
 
@@ -79,7 +78,7 @@ Instancia componentes de interface gráfica de usuário (GUI) com **Java Swing**
 
 ## 7. Instruções para Executar o Projeto Utilizando Docker
 
-O projeto conta com um **Dockerfile** configurado que provisiona o ambiente Java, baixa automaticamente o Jython e configura suporte gráfico virtual (`Xvfb`), dispensando qualquer instalação prévia de Java ou Jython na máquina do avaliador.
+O projeto conta com um Dockerfile configurado que provisiona o ambiente Java e baixa automaticamente o Jython, dispensando qualquer instalação prévia de Java ou Jython na máquina do avaliador.
 
 ### 1. Construir a Imagem Docker
 Na raiz do projeto (`atividade-jython/`), execute:
