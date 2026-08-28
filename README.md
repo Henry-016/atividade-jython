@@ -1,5 +1,7 @@
 # Interoperabilidade Python e Java com Jython
 
+## 0. Vídeo Solicitado: https://youtu.be/5fux7tRIFvc
+
 ## 1. Descrição do Jython
 
 O **Jython** é uma implementação open-source de alta performance da linguagem Python desenvolvida totalmente em Java. Diferentemente do interpretador de referência (CPython, escrito em C), o Jython compila o código-fonte Python diretamente para *bytecode* executável pela **Java Virtual Machine (JVM)**.
